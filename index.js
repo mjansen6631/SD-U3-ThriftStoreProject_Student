@@ -54,10 +54,39 @@ const salesTax = [
 ];
 
 //! Classes
-
+class Store {
+    static createStore(name,city,state,salesTax,inventory,balance,expenses,profit,paidTax) {
+        this.name= name;
+        this.city = city;
+        this.state = state;
+        this.salesTax = salesTax.filter(salesTax => {state, tax 
+        });
+        this.inventory = [];
+        this.balance = 0;
+        this.expenses = 0;
+        this.profit= 0;
+        this.paidTax= 0;
+    }
+}
 
 //! CREATE STORES
-// Generate 3 different stores, each in a different state.
+class Store extends First {
+    constructor(name,city,state,salesTax,inventory,balance,expenses,profit,paidTax){
+
+    }
+}
+
+class Store extends Second {
+    constructor(name,city,state,salesTax,inventory,balance,expenses,profit,paidTax){
+
+    }
+}
+
+class Store extends Third {
+    constructor(name,city,state,salesTax,inventory,balance,expenses,profit,paidTax){
+
+    }
+}
 
 //! Inventory
 
