@@ -54,20 +54,33 @@ const salesTax = [
 ];
 
 //! Classes
-class Store {
-    static createStore(name,city,state,salesTax,inventory,balance,expenses,profit,paidTax) {
-        this.name= name;
-        this.city = city;
-        this.state = state;
-        this.salesTax = salesTax.filter(salesTax => {state, tax 
-        });
-        this.inventory = [];
-        this.balance = 0;
-        this.expenses = 0;
-        this.profit= 0;
-        this.paidTax= 0;
+class Product {
+    constructor(upc,name,type,purchasePrice,quantity){
+        this.upc=upc;
+        this.name=name;
+        this.type=type;
+        this.purchasePrice=purchasePrice;
+        this.quantity=quantity;
     }
 }
+class Store {
+    constructor(name,city,state,salesTax,inventory,balance,expense,profit,tax_paid){
+        this.name=name;
+        this.city=city;
+        this.state=state;
+        this.salesTax=salesTax;
+        this.inventory=inventory;
+        this.balance=balance;
+        this.expense=expense;
+        this.profit=profit;
+    }
+}
+
+createNewStore(name,city,state,inventory,balance,expense,profit,tax_paid);{
+    let salesTax = salesTax.find(salesTax => salesTax.state === state)
+    return new Store (name,city,state,inventory,balance,expense,profit,tax_paid)
+}
+
 
 //! CREATE STORES
 class Store extends First {
