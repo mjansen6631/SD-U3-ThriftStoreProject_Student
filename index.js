@@ -55,7 +55,12 @@ const salesTax = [
 
 //! Classes
 class Product {
-    constructor(upc,name,type,purchasePrice,quantity){
+    static addItem (upc,name,type,purchasePrice,quantity){
+        return new Product (upc,name,type,purchasePrice,quantity)
+    }
+
+
+    constructor(upc,name,type,purchasePrice,quantity=1){
         this.upc=upc;
         this.name=name;
         this.type=type;
@@ -64,6 +69,14 @@ class Product {
     }
 }
 class Store {
+
+
+    static createNewStore(name,city,state,balance){
+        let getTax = salesTax.filter(salesTax => salesTax.state === state)
+        this.sales_Tax = getTax[0].tax;
+        return new Store (name,city,state,balance,this.sales_Tax)
+    }
+
     constructor(name,city,state,salesTax,inventory,balance,expense,profit,tax_paid){
         this.name=name;
         this.city=city;
@@ -74,53 +87,52 @@ class Store {
         this.expense=expense;
         this.profit=profit;
     }
-}
+};
 
-createNewStore(name,city,state,inventory,balance,expense,profit,tax_paid);{
-    let salesTax = salesTax.find(salesTax => salesTax.state === state)
-    return new Store (name,city,state,inventory,balance,expense,profit,tax_paid)
-}
+addItemToInventory(product, markupPrice){
+    const existingProduct=this.inventory.find(item => item.upc === newProduct.upc);
 
+    if(existingProduct) {
+        existingProduct.quantity += product.quantity
+    } else {
+            product.updateMarketPrice(markupPrice);
+            this.inventory.push(product);
+            this.balance-=product.purchasePrice * product.quantity;
+        }
+};
+
+sellItem(upc,quantity,markupPrice){
+    const product = this.inventory.find(item=> item.upc === upc);
+
+    if (product && product.quantity >= quantity){
+        product.updateMarketPrice(markupPrice)
+        product.quantity -= quantity;
+        const totalPrice = product.markupPrice * quantity;
+        const purchaseValue = product.markupPrice * quantity;
+        this.balance += totalPrice;
+        this.profit += totalPrice-purchaseValue;
+        this.expense += purchaseValue;
+        this.paidTax += totalPrice * this.salesTax;
+    } else {
+        console.log(`Sorry! Your item with ${upc} is out of stock.`)
+    }
+}; 
 
 //! CREATE STORES
-class Store extends First {
-    constructor(name,city,state,salesTax,inventory,balance,expenses,profit,paidTax){
+const StoreOne = Store.createNewStore(`ABC Thrift`,`Long Beach`,`California`, 350);
 
-    }
-}
-
-class Store extends Second {
-    constructor(name,city,state,salesTax,inventory,balance,expenses,profit,paidTax){
-
-    }
-}
-
-class Store extends Third {
-    constructor(name,city,state,salesTax,inventory,balance,expenses,profit,paidTax){
-
-    }
-}
+const recordPlayer = new Product(1,`Record Player`,`Electronics`,25,4);
+const dressShirt = new Product(2,`Dress Shirt`,`Clothing`,6,5);
+const funkyPants = new Product (3,`Funky Pants`,`Clothing`,1,9);
 
 //! Inventory
+StoreOne.addItemToInventory(recordPlayer, 0.4);
+StoreOne.addItemToInventory(dressShirt,0.25);
+StoreOne.addItemToInventory(funkyPants,0.3);
+
+
+const StoreTwo = Store.createNewStore(`DEF Thrift`, `Denver`, `Colorado`, 425);
+const StoreThree = Store.createNewStore(`GHI Thrift`, `Moab`, `Utah`, 250);
 
 
 //! Stocking
-
-//* First Store
-
-//* Second Store
-
-//* Third Store
-
-//! Selling
-
-//* First Store
-
-//* Second Store
-
-//* Third Store
-
-//! Testing
-/* 
-    Simply console log each store to check the completed details.
-*/
