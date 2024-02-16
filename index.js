@@ -77,38 +77,38 @@ class Store {
         return new Store (name,city,state,balance,this.sales_Tax)
     }
 
-    constructor(name,city,state,salesTax,inventory,balance,expense,profit,tax_paid){
+    constructor(name,city,state,salesTax){
         this.name=name;
         this.city=city;
         this.state=state;
         this.salesTax=salesTax;
-        this.inventory=inventory;
-        this.balance=balance;
-        this.expense=expense;
-        this.profit=profit;
+        this.inventory=[];
+        this.balance=500;
+        this.expense=0;
+        this.profit=0;
     }
-};
+
 
 addItemToInventory(product, markupPrice){
-    const existingProduct=this.inventory.find(item => item.upc === newProduct.upc);
+    const existingProduct=this.inventory.find(item => item.upc === product.upc);
 
     if(existingProduct) {
         existingProduct.quantity += product.quantity
     } else {
-            product.updateMarketPrice(markupPrice);
+           // product.updateMarketPrice(markupPrice);
             this.inventory.push(product);
             this.balance-=product.purchasePrice * product.quantity;
         }
 };
 
-sellItem(upc,quantity,markupPrice){
+sellItem(upc,quantity){
     const product = this.inventory.find(item=> item.upc === upc);
 
     if (product && product.quantity >= quantity){
-        product.updateMarketPrice(markupPrice)
+        // product.updateMarketPrice(markupPrice)
         product.quantity -= quantity;
-        const totalPrice = product.markupPrice * quantity;
-        const purchaseValue = product.markupPrice * quantity;
+        const totalPrice = product.purchasePrice * quantity;
+        const purchaseValue = product.purchasePrice * quantity;
         this.balance += totalPrice;
         this.profit += totalPrice-purchaseValue;
         this.expense += purchaseValue;
@@ -117,6 +117,7 @@ sellItem(upc,quantity,markupPrice){
         console.log(`Sorry! Your item with ${upc} is out of stock.`)
     }
 }; 
+};
 
 //! CREATE STORES
 const StoreOne = Store.createNewStore(`ABC Thrift`,`Long Beach`,`California`, 350);
@@ -127,12 +128,16 @@ const funkyPants = new Product (3,`Funky Pants`,`Clothing`,1,9);
 
 //! Inventory
 StoreOne.addItemToInventory(recordPlayer, 0.4);
-StoreOne.addItemToInventory(dressShirt,0.25);
-StoreOne.addItemToInventory(funkyPants,0.3);
+//StoreOne.addItemToInventory(dressShirt,0.25);
+//StoreOne.addItemToInventory(funkyPants,0.3);
+
+StoreOne.sellItem(1,1)
 
 
-const StoreTwo = Store.createNewStore(`DEF Thrift`, `Denver`, `Colorado`, 425);
-const StoreThree = Store.createNewStore(`GHI Thrift`, `Moab`, `Utah`, 250);
+//const StoreTwo = Store.createNewStore(`DEF Thrift`, `Denver`, `Colorado`, 425);
+//const StoreThree = Store.createNewStore(`GHI Thrift`, `Moab`, `Utah`, 250);
 
 
 //! Stocking
+
+console.log(StoreOne);
