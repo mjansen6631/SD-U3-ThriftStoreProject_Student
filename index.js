@@ -53,12 +53,12 @@ const salesTax = [
     {state: 'Wyoming', tax: .04},
 ];
 
-//! Classes
+//! Classes 
 class Product {
     static addItem (upc,name,type,purchasePrice,quantity){
         return new Product (upc,name,type,purchasePrice,quantity)
     }
-
+// Static method to be able to replicate items via passing data in
 
     constructor(upc,name,type,purchasePrice,quantity=1){
         this.upc=upc;
@@ -66,26 +66,31 @@ class Product {
         this.type=type;
         this.purchasePrice=purchasePrice;
         this.quantity=quantity;
+        this.markupPrice=0;
+    }
+
+    updateMarketPrice(markupPrice){
+        this.markupPrice=this.purchasePrice + (this.purchasePrice * markupPrice);
     }
 }
 class Store {
 
 
     static createNewStore(name,city,state,balance){
-        let getTax = salesTax.filter(salesTax => salesTax.state === state)
-        this.sales_Tax = getTax[0].tax;
-        return new Store (name,city,state,balance,this.sales_Tax)
+        let getTax = salesTax.filter(salesTax => salesTax.state === state) // filtering provided array to assign the proper sales tax rate
+        this.sales_tax = getTax[0].tax;
+        return new Store (name,city,state,balance,this.sales_tax)
     }
-
-    constructor(name,city,state,salesTax){
+// Static method to be able to replicate items via passing data in
+    constructor(name,city,state){
         this.name=name;
         this.city=city;
         this.state=state;
-        this.salesTax=salesTax;
         this.inventory=[];
         this.balance=500;
         this.expense=0;
         this.profit=0;
+        this.paidTax=0;
     }
 
 
@@ -93,26 +98,26 @@ addItemToInventory(product, markupPrice){
     const existingProduct=this.inventory.find(item => item.upc === product.upc);
 
     if(existingProduct) {
-        existingProduct.quantity += product.quantity
+        existingProduct.quantity += product.quantity // setting unique values for UPCs so items can be searched via an independently assigned number
     } else {
-           // product.updateMarketPrice(markupPrice);
-            this.inventory.push(product);
-            this.balance-=product.purchasePrice * product.quantity;
+            product.updateMarketPrice(markupPrice);
+            this.inventory.push(product); // adding to list of products via push
+            this.balance-=product.purchasePrice * product.quantity; // tracking the balance of the store so it can't buy more items than it has cash on hand
         }
 };
 
-sellItem(upc,quantity){
+sellItem(upc,quantity,markupPrice){
     const product = this.inventory.find(item=> item.upc === upc);
-
+// figured out that I hadn't defined any of my markupPrice/value equations and was not being iterated upon. Now investigating why each one comes up with NaN now.
     if (product && product.quantity >= quantity){
-        // product.updateMarketPrice(markupPrice)
+        product.updateMarketPrice(markupPrice);
         product.quantity -= quantity;
-        const totalPrice = product.purchasePrice * quantity;
+        const totalPrice = product.markupPricePrice * quantity;
         const purchaseValue = product.purchasePrice * quantity;
         this.balance += totalPrice;
         this.profit += totalPrice-purchaseValue;
         this.expense += purchaseValue;
-        this.paidTax += totalPrice * this.salesTax;
+        this.paidTax += totalPrice * this.sales_tax;
     } else {
         console.log(`Sorry! Your item with ${upc} is out of stock.`)
     }
@@ -128,8 +133,8 @@ const funkyPants = new Product (3,`Funky Pants`,`Clothing`,1,9);
 
 //! Inventory
 StoreOne.addItemToInventory(recordPlayer, 0.4);
-//StoreOne.addItemToInventory(dressShirt,0.25);
-//StoreOne.addItemToInventory(funkyPants,0.3);
+StoreOne.addItemToInventory(dressShirt,0.25);
+StoreOne.addItemToInventory(funkyPants,0.3);
 
 StoreOne.sellItem(1,1)
 
@@ -141,3 +146,5 @@ StoreOne.sellItem(1,1)
 //! Stocking
 
 console.log(StoreOne);
+//console.log(StoreTwo);
+//console.log(StoreThree);
