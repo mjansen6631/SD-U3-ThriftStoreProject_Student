@@ -78,16 +78,17 @@ class Store {
 
     static createNewStore(name,city,state,balance){
         let getTax = salesTax.filter(salesTax => salesTax.state === state) // filtering provided array to assign the proper sales tax rate
-        this.sales_tax = getTax[0].tax;
-        return new Store (name,city,state,balance,this.sales_tax)
+        let sales_tax = getTax[0].tax;
+        return new Store (name,city,state,balance,sales_tax)
     }
 // Static method to be able to replicate items via passing data in
-    constructor(name,city,state){
+    constructor(name,city,state,balance,sales_tax){
         this.name=name;
         this.city=city;
         this.state=state;
+        this.balance=balance;
+        this.sales_tax=sales_tax;
         this.inventory=[];
-        this.balance=500;
         this.expense=0;
         this.profit=0;
         this.paidTax=0;
@@ -106,17 +107,17 @@ addItemToInventory(product, markupPrice){
         }
 };
 
-sellItem(upc,quantity,markupPrice){
+sellItem(upc,quantity){
     const product = this.inventory.find(item=> item.upc === upc);
 // figured out that I hadn't defined any of my markupPrice/value equations and was not being iterated upon. Now investigating why each one comes up with NaN now.
     if (product && product.quantity >= quantity){
-        product.updateMarketPrice(markupPrice);
+    //    product.updateMarketPrice(markupPrice);
         product.quantity -= quantity;
-        const totalPrice = product.markupPricePrice * quantity;
-        const purchaseValue = product.purchasePrice * quantity;
+        const totalPrice = product.markupPrice * quantity;
+        const purchasePrice = product.purchasePrice * quantity;
         this.balance += totalPrice;
-        this.profit += totalPrice-purchaseValue;
-        this.expense += purchaseValue;
+        this.profit += totalPrice-purchasePrice;
+        this.expense += purchasePrice;
         this.paidTax += totalPrice * this.sales_tax;
     } else {
         console.log(`Sorry! Your item with ${upc} is out of stock.`)
@@ -125,26 +126,43 @@ sellItem(upc,quantity,markupPrice){
 };
 
 //! CREATE STORES
-const StoreOne = Store.createNewStore(`ABC Thrift`,`Long Beach`,`California`, 350);
+const StoreOne = Store.createNewStore(`ABC Thrift`,`Long Beach`,`California`,350);
 
-const recordPlayer = new Product(1,`Record Player`,`Electronics`,25,4);
+const recordPlayer1 = new Product(1,`Record Player`,`Electronics`,25,4);
 const dressShirt = new Product(2,`Dress Shirt`,`Clothing`,6,5);
 const funkyPants = new Product (3,`Funky Pants`,`Clothing`,1,9);
 
 //! Inventory
-StoreOne.addItemToInventory(recordPlayer, 0.4);
+StoreOne.addItemToInventory(recordPlayer1, 0.4);
 StoreOne.addItemToInventory(dressShirt,0.25);
 StoreOne.addItemToInventory(funkyPants,0.3);
 
 StoreOne.sellItem(1,1)
 
 
-//const StoreTwo = Store.createNewStore(`DEF Thrift`, `Denver`, `Colorado`, 425);
-//const StoreThree = Store.createNewStore(`GHI Thrift`, `Moab`, `Utah`, 250);
+const StoreTwo = Store.createNewStore(`DEF Thrift`, `Denver`, `Colorado`, 425);
 
+const recordPlayer2 = new Product(1,`Record Player`,`Electronics`,25,4);
+const whisk = new Product(4,`whisk`,`Cookware`,10,3)
+const deliSlicer = new Product(5,`Deli Slicer`,1,200)
 
-//! Stocking
+StoreTwo.addItemToInventory(recordPlayer2,0.4);
+StoreTwo.addItemToInventory(whisk,0.2);
+StoreTwo.addItemToInventory(deliSlicer,0.45)
+StoreTwo.sellItem(5,1);
+
+const StoreThree = Store.createNewStore(`GHI Thrift`, `Moab`, `Utah`, 250);
+
+const recordPlayer3 = new Product(1,`Record Player`,`Electronics`,25,4);
+const painting = new Product(6,`Painting`,`Home Decor`,25,3);
+const endTable = new Product(7,`End Table`,`Home Decor`,15,2)
+
+StoreThree.addItemToInventory(recordPlayer3,0.4);
+StoreThree.addItemToInventory(painting,0.5);
+StoreThree.addItemToInventory(endTable,0.2);
+//StoreThree.sellItem(6,5); (won't sel because quantity is more than amount in stock)
+StoreThree.sellItem(7,2);
 
 console.log(StoreOne);
-//console.log(StoreTwo);
-//console.log(StoreThree);
+console.log(StoreTwo);
+console.log(StoreThree);
